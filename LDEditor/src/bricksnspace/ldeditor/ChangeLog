@@ -1,0 +1,21 @@
+2015-08-27  Mario Pascucci  <mpascucci@gmail.com>
+
+	* LDEditor.java (resetCurrentAction): NPE when last connection target is on deleted part: fixed
+
+2015-07-21  Mario Pascucci  <mpascucci@gmail.com>
+
+	* LDEditor.java (getPrimitives): added delegated method to get primitives in part
+
+2015-07-15  Mario Pascucci  <mpascucci@gmail.com>
+
+	* AddPartModePlugin.java (doClick): Wrong handling when repeat insert is disabled: fixed
+
+2015-06-12  Mario Pascucci  <mpascucci@gmail.com>
+
+	* DuplicatePartModePlugin.java (doMove): bugfix, part movement without autoconnect now works
+	* AddPartModePlugin.java (doMove): bugfix, part movement without autoconnect now works
+	* LDEditor.java (picked): bugfix, right click as "center to" now works even if action is active. 
+	
+2015-05-13  Mario Pascucci  <mpascucci@gmail.com>
+
+	* LDEditorPlugin.java (doStepChanged): added method to notify a change in current STEP
