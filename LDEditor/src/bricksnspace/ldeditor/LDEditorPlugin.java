@@ -118,5 +118,13 @@ public interface LDEditorPlugin {
 	 * @param step new current step
 	 */
 	public abstract void doStepChanged(int step);
+
+
+	/**
+	 * called when user starts dragging mouse
+	 * @param partId part under cursor, 0 if none 
+	 */
+	public abstract void doDragParts(int partId);
+	
 	
 }

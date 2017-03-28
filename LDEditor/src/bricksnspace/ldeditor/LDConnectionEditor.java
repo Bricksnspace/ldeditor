@@ -34,22 +34,22 @@ import java.util.Set;
 import bricksnspace.j3dgeom.JSimpleGeom;
 import bricksnspace.j3dgeom.Matrix3D;
 import bricksnspace.j3dgeom.Point3D;
-import bricksnspace.ldraw3d.ConnectionHandler;
 import bricksnspace.ldraw3d.DrawHelpers;
 import bricksnspace.ldraw3d.Gadget3D;
 import bricksnspace.ldraw3d.HandlingListener;
 import bricksnspace.ldraw3d.LDRenderedPart;
 import bricksnspace.ldraw3d.LDrawGLDisplay;
-import bricksnspace.ldraw3d.PartQueryable;
 import bricksnspace.ldraw3d.PickMode;
 import bricksnspace.ldraw3d.ProgressUpdater;
 import bricksnspace.ldraw3d.DrawHelpers.PointerMode;
+import bricksnspace.ldrawlib.ConnectionHandler;
 import bricksnspace.ldrawlib.ConnectionPoint;
 import bricksnspace.ldrawlib.ConnectionTypes;
 import bricksnspace.ldrawlib.LDPrimitive;
 import bricksnspace.ldrawlib.LDrawCommand;
 import bricksnspace.ldrawlib.LDrawPart;
 import bricksnspace.ldrawlib.LDrawPartType;
+import bricksnspace.ldrawlib.PartQueryable;
 import bricksnspace.simpleundo.Undo;
 import bricksnspace.simpleundo.UndoableAction;
 import bricksnspace.simpleundo.UndoableOperation;
@@ -1537,7 +1537,14 @@ public class LDConnectionEditor implements Runnable, UncaughtExceptionHandler,
 
 
 	@Override
-	public void keyReleased(KeyEvent e) { }
+	public void keyReleased(KeyEvent e) { /* do nothing */ }
+
+
+
+	@Override
+	public void startDragParts(int partId) {
+		/* do nothing */
+	}
 
 	
 	

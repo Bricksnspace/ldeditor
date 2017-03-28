@@ -37,12 +37,12 @@ import javax.swing.SwingConstants;
 import bricksnspace.j3dgeom.JSimpleGeom;
 import bricksnspace.j3dgeom.Matrix3D;
 import bricksnspace.j3dgeom.Point3D;
-import bricksnspace.ldraw3d.ConnectionHandler;
 import bricksnspace.ldraw3d.DrawHelpers;
 import bricksnspace.ldraw3d.LDRenderedPart;
 import bricksnspace.ldraw3d.LDrawGLDisplay;
 import bricksnspace.ldraw3d.PickMode;
 import bricksnspace.ldraw3d.DrawHelpers.PointerMode;
+import bricksnspace.ldrawlib.ConnectionHandler;
 import bricksnspace.ldrawlib.ConnectionPoint;
 import bricksnspace.ldrawlib.LDPrimitive;
 import bricksnspace.simpleundo.Undo;
@@ -235,12 +235,12 @@ public class RotatePartModePlugin implements LDEditorPlugin, ActionListener {
 
 
 	@Override
-	public void doWindowSelected(Set<Integer> selected) { }
+	public void doWindowSelected(Set<Integer> selected) { /* do nothing */ }
 
 
 
 	@Override
-	public void doColorchanged(int colorIndex) { }
+	public void doColorchanged(int colorIndex) { /* do nothing */ }
 
 
 
@@ -293,7 +293,7 @@ public class RotatePartModePlugin implements LDEditorPlugin, ActionListener {
 
 	@Override
 	public void doStepChanged(int step) {
-		
+		/* do nothing */
 	}
 
 
@@ -302,6 +302,13 @@ public class RotatePartModePlugin implements LDEditorPlugin, ActionListener {
 	public boolean needSelection() {
 
 		return false;
+	}
+
+
+
+	@Override
+	public void doDragParts(int partId) {
+		/* do nothing */
 	}
 
 	

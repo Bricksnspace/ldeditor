@@ -33,23 +33,25 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import bricksnspace.j3dgeom.JSimpleGeom;
 import bricksnspace.j3dgeom.Matrix3D;
 import bricksnspace.j3dgeom.Point3D;
-import bricksnspace.ldraw3d.ConnectionHandler;
 import bricksnspace.ldraw3d.DrawHelpers;
 import bricksnspace.ldraw3d.HandlingListener;
 import bricksnspace.ldraw3d.LDRenderedPart;
 import bricksnspace.ldraw3d.LDrawGLDisplay;
-import bricksnspace.ldraw3d.PartQueryable;
 import bricksnspace.ldraw3d.PickMode;
 import bricksnspace.ldraw3d.ProgressUpdater;
+import bricksnspace.ldrawlib.ConnectionHandler;
 import bricksnspace.ldrawlib.LDPrimitive;
 import bricksnspace.ldrawlib.LDrawColor;
 import bricksnspace.ldrawlib.LDrawCommand;
 import bricksnspace.ldrawlib.LDrawPart;
 import bricksnspace.ldrawlib.LDrawPartType;
+import bricksnspace.ldrawlib.PartQueryable;
 import bricksnspace.simpleundo.Undo;
 import bricksnspace.simpleundo.UndoableAction;
 import bricksnspace.simpleundo.UndoableOperation;
@@ -74,6 +76,7 @@ public class LDEditor implements Runnable, UncaughtExceptionHandler,
 	public static final String ROTATEPLUGIN = "Rotate";
 	public static final String FLEXPLUGIN = "Flex";
 	public static final String STEPPLUGIN = "Step";
+	public static final String DRAGPLUGIN = "Drag";
 	
 	// plugin list
 	private Map<String,LDEditorPlugin> plugins = new HashMap<String, LDEditorPlugin>();
@@ -157,6 +160,7 @@ public class LDEditor implements Runnable, UncaughtExceptionHandler,
 		plugins.put(ROTATEPLUGIN, new RotatePartModePlugin(this, dh, connHandler, undo, display));
 		plugins.put(FLEXPLUGIN, new FlexPartPlugin(this, dh, connHandler, undo, display));
 		plugins.put(STEPPLUGIN, new BuildStepPlugin(this, dh, connHandler, undo, display));
+		plugins.put(DRAGPLUGIN, new DragPartModePlugin(this, dh, connHandler, undo, display));
 	}
 	
 	
@@ -1093,10 +1097,9 @@ public class LDEditor implements Runnable, UncaughtExceptionHandler,
 	
 	
 	
-	
-	/**
-	 * @param id
-	 * @return
+	/*
+	 * (non-Javadoc)
+	 * @see bricksnspace.ldrawlib.PartQueryable#isHidden(int)
 	 */
 	@Override
 	public boolean isHidden(int id) {
@@ -1321,7 +1324,7 @@ public class LDEditor implements Runnable, UncaughtExceptionHandler,
 	public void uncaughtException(Thread t, Throwable e) {
 		
 		updater.updateIncomplete();
-		e.printStackTrace();
+		Logger.getGlobal().log(Level.WARNING, "[LDEditor] Unable to complete rendering for model "+mainModel.getLdrawId(), e);
 	}
 
 
@@ -1465,6 +1468,18 @@ public class LDEditor implements Runnable, UncaughtExceptionHandler,
 	
 
 	
+	@Override
+	public void startDragParts(int partId) {
+		
+		/*
+		 * avoid multiple drag start
+		 * mouse drag events are notified continuously during "drag" 
+		 */
+		if (getCurrentAction() == plugins.get(DRAGPLUGIN)) 
+			return;
+		startAction(DRAGPLUGIN, partId);
+	}
+	
 
 	
 	
@@ -1472,7 +1487,6 @@ public class LDEditor implements Runnable, UncaughtExceptionHandler,
 	@Override
 	public void keyTyped(KeyEvent e) {
 
-		//System.out.println(e);
 		if (e.getKeyChar() == 27) {
 			// ESC -> release moving part
 			resetCurrentAction();
@@ -1489,7 +1503,6 @@ public class LDEditor implements Runnable, UncaughtExceptionHandler,
 	@Override
 	public void keyPressed(KeyEvent e) { 
 		
-		//System.out.println(e);
 		if (e.getKeyCode() == KeyEvent.VK_CUT
 				|| (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_X)) {
 			doCutCopy(true);
@@ -1531,7 +1544,9 @@ public class LDEditor implements Runnable, UncaughtExceptionHandler,
 
 	@Override
 	public void keyReleased(KeyEvent e) { }
-	
+
+
+
 
 
 }

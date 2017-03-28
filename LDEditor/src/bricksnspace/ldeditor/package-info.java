@@ -1,5 +1,5 @@
 /*
-	Copyright 2015 Mario Pascucci <mpascucci@gmail.com>
+	Copyright 2015-2017 Mario Pascucci <mpascucci@gmail.com>
 	This file is part of LDEditor
 
 	LDEditor is free software: you can redistribute it and/or modify

@@ -24,11 +24,11 @@ import java.awt.event.KeyEvent;
 import java.util.Set;
 
 import bricksnspace.j3dgeom.Point3D;
-import bricksnspace.ldraw3d.ConnectionHandler;
 import bricksnspace.ldraw3d.DrawHelpers;
 import bricksnspace.ldraw3d.LDrawGLDisplay;
 import bricksnspace.ldraw3d.PickMode;
 import bricksnspace.ldraw3d.DrawHelpers.PointerMode;
+import bricksnspace.ldrawlib.ConnectionHandler;
 import bricksnspace.ldrawlib.LDPrimitive;
 import bricksnspace.ldrawlib.LDrawColor;
 import bricksnspace.simpleundo.Undo;
@@ -116,7 +116,7 @@ public class RecolorModePlugin implements LDEditorPlugin {
 
 	@Override
 	public void doMove(int partId, Point3D eyeNear, Point3D eyeFar) {
-		
+		/* do nothing */
 	}
 
 	
@@ -170,7 +170,7 @@ public class RecolorModePlugin implements LDEditorPlugin {
 
 	@Override
 	public void doStepChanged(int step) {
-		
+		/* do nothing */
 	}
 
 
@@ -181,6 +181,15 @@ public class RecolorModePlugin implements LDEditorPlugin {
 	public boolean needSelection() {
 
 		return false;
+	}
+
+
+
+
+
+	@Override
+	public void doDragParts(int partId) {
+		/* do nothing */
 	}
 
 }

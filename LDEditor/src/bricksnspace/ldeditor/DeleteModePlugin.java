@@ -24,11 +24,11 @@ import java.awt.event.KeyEvent;
 import java.util.Set;
 
 import bricksnspace.j3dgeom.Point3D;
-import bricksnspace.ldraw3d.ConnectionHandler;
 import bricksnspace.ldraw3d.DrawHelpers;
 import bricksnspace.ldraw3d.LDrawGLDisplay;
 import bricksnspace.ldraw3d.PickMode;
 import bricksnspace.ldraw3d.DrawHelpers.PointerMode;
+import bricksnspace.ldrawlib.ConnectionHandler;
 import bricksnspace.ldrawlib.LDPrimitive;
 import bricksnspace.simpleundo.Undo;
 
@@ -103,11 +103,12 @@ public class DeleteModePlugin implements LDEditorPlugin {
 
 	@Override
 	public void doMove(int partId, Point3D eyeNear, Point3D eyeFar) {
-		
+		// do nothing
 	}
 
 	@Override
 	public boolean doKeyPress(KeyEvent e) {
+		// do nothing
 		return false;
 	}
 
@@ -133,7 +134,7 @@ public class DeleteModePlugin implements LDEditorPlugin {
 
 
 	@Override
-	public void doColorchanged(int colorIndex) { }
+	public void doColorchanged(int colorIndex) { /* do nothing */ }
 
 
 
@@ -142,6 +143,7 @@ public class DeleteModePlugin implements LDEditorPlugin {
 	@Override
 	public boolean doMatrixChanged() {
 		
+		// do nothing
 		return false;
 	}
 
@@ -151,7 +153,7 @@ public class DeleteModePlugin implements LDEditorPlugin {
 
 	@Override
 	public void doStepChanged(int step) {
-		
+		// do nothing
 	}
 
 
@@ -162,6 +164,15 @@ public class DeleteModePlugin implements LDEditorPlugin {
 	public boolean needSelection() {
 
 		return false;
+	}
+
+
+
+
+
+	@Override
+	public void doDragParts(int partId) {
+		// do nothing
 	}
 
 }

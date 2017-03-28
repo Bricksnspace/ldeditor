@@ -35,12 +35,12 @@ import javax.swing.JButton;
 import bricksnspace.j3dgeom.JSimpleGeom;
 import bricksnspace.j3dgeom.Matrix3D;
 import bricksnspace.j3dgeom.Point3D;
-import bricksnspace.ldraw3d.ConnectionHandler;
 import bricksnspace.ldraw3d.DrawHelpers;
 import bricksnspace.ldraw3d.Gadget3D;
 import bricksnspace.ldraw3d.LDRenderedPart;
 import bricksnspace.ldraw3d.LDrawGLDisplay;
 import bricksnspace.ldraw3d.PickMode;
+import bricksnspace.ldrawlib.ConnectionHandler;
 import bricksnspace.ldrawlib.ConnectionPoint;
 import bricksnspace.ldrawlib.LDFlexPart;
 import bricksnspace.ldrawlib.LDPrimitive;
@@ -563,7 +563,7 @@ public class FlexPartPlugin implements LDEditorPlugin, ActionListener {
 
 
 	@Override
-	public void doWindowSelected(Set<Integer> selected) { }
+	public void doWindowSelected(Set<Integer> selected) { /* do nothing */ }
 
 
 
@@ -626,7 +626,7 @@ public class FlexPartPlugin implements LDEditorPlugin, ActionListener {
 
 	@Override
 	public void doStepChanged(int step) {
-		
+		/* do nothing */
 	}
 
 
@@ -634,6 +634,12 @@ public class FlexPartPlugin implements LDEditorPlugin, ActionListener {
 	public boolean needSelection() {
 
 		return false;
+	}
+
+
+	@Override
+	public void doDragParts(int partId) {
+		/* do nothing */
 	}
 
 	

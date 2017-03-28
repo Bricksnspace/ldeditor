@@ -1,3 +1,12 @@
+2017-03-28  Mario Pascucci  <mpascucci@gmail.com>
+
+	* src/bricksnspace/ldeditor/DragPartModePlugin.java: new plugin to move parts via click&drag
+
+2017-03-24  Mario Pascucci  <mpascucci@gmail.com>
+
+	* src/bricksnspace/ldeditor/LDEditor.java (startDragParts): added method to propagate mouse drag event to plugins
+	* src/bricksnspace/ldeditor/LDEditorPlugin.java (doDragParts): added method for mouse drag handling
+
 2015-08-27  Mario Pascucci  <mpascucci@gmail.com>
 
 	* LDEditor.java (resetCurrentAction): NPE when last connection target is on deleted part: fixed

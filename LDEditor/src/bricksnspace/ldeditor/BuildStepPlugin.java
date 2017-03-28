@@ -37,10 +37,10 @@ import javax.swing.JButton;
 import javax.swing.JOptionPane;
 
 import bricksnspace.j3dgeom.Point3D;
-import bricksnspace.ldraw3d.ConnectionHandler;
 import bricksnspace.ldraw3d.DrawHelpers;
 import bricksnspace.ldraw3d.LDrawGLDisplay;
 import bricksnspace.ldraw3d.PickMode;
+import bricksnspace.ldrawlib.ConnectionHandler;
 import bricksnspace.ldrawlib.LDPrimitive;
 import bricksnspace.ldrawlib.LDrawPart;
 import bricksnspace.simpleundo.Undo;
@@ -242,6 +242,8 @@ public class BuildStepPlugin implements LDEditorPlugin, ActionListener {
 			int res = JOptionPane.showConfirmDialog(autoStep, "This will reorganize building steps.\nIt'll deletes every defined STEP.\nAre you sure?",
 					"Confirm auto-STEP", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 			if (res == JOptionPane.YES_OPTION) {
+				editor.unselectAll();
+				resetHighLight();
 				int partPerStep = 3;
 				boolean submodelInStep = true;
 				List<LDPrimitive> parts;
@@ -323,6 +325,12 @@ public class BuildStepPlugin implements LDEditorPlugin, ActionListener {
 	public boolean needSelection() {
 
 		return true;
+	}
+
+
+	@Override
+	public void doDragParts(int partId) {
+		// do nothing
 	}
 	
 	

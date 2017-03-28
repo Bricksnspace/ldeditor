@@ -21,6 +21,8 @@
 package bricksnspace.ldeditor;
 
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import bricksnspace.j3dgeom.Matrix3D;
@@ -32,6 +34,7 @@ import bricksnspace.ldraw3d.PickMode;
 import bricksnspace.ldrawlib.ConnectionHandler;
 import bricksnspace.ldrawlib.ConnectionPoint;
 import bricksnspace.ldrawlib.LDPrimitive;
+import bricksnspace.ldrawlib.LDrawColor;
 import bricksnspace.ldrawlib.LDrawCommand;
 import bricksnspace.ldrawlib.LDrawPart;
 import bricksnspace.simpleundo.Undo;
@@ -43,7 +46,7 @@ import bricksnspace.simpleundo.Undo;
  * @author Mario Pascucci
  *
  */
-public class AddPartModePlugin implements LDEditorPlugin {
+public class DragPartModePlugin implements LDEditorPlugin {
 	
 	
 	LDEditor editor = null;
@@ -52,14 +55,15 @@ public class AddPartModePlugin implements LDEditorPlugin {
 	LDrawGLDisplay display = null;
 	Undo<LDPrimitive> undo = null;
 	LDPrimitive currentPart = null;
+	List<LDPrimitive> tempPart;
 	LDRenderedPart currPartRendered = null;
 	boolean movingPart = false; 
-	boolean explodeBlock;
-	private int colorIndex;
+	private static final String movingPartName = "__internal_dragging__";
+	private int partId;
 
 	
 	
-	public AddPartModePlugin(LDEditor me, DrawHelpers dhelp, ConnectionHandler ch, 
+	public DragPartModePlugin(LDEditor me, DrawHelpers dhelp, ConnectionHandler ch, 
 			Undo<LDPrimitive>u, LDrawGLDisplay gld) {
 		if (me == null || dhelp == null || ch == null || gld == null || u == null)
 			throw new IllegalArgumentException("[AddPartModePlugin] All parameters must be not null.");
@@ -79,18 +83,51 @@ public class AddPartModePlugin implements LDEditorPlugin {
 	public void start(Object... params) {
 		
 		// parameters check
-		if (params.length != 3)
-			throw new IllegalArgumentException("[AddPartModePlugin.start] Wrong parameter number, must be 3.");
-		if (!(params[0] instanceof String))
-			throw new IllegalArgumentException("[AddPartModePlugin.start] Param[0] must be String.");
-		if (!(params[1] instanceof Integer))
-			throw new IllegalArgumentException("[AddPartModePlugin.start] Param[1] must be Integer");
-		if (!(params[2] instanceof Boolean))
-			throw new IllegalArgumentException("[AddPartModePlugin.start] Param[2] must be Boolean");
-		String ldrid = (String) params[0];
-		colorIndex = (Integer) params[1];
-		explodeBlock = (Boolean) params[2];
-		currentPart = LDPrimitive.newGlobalPart(ldrid,colorIndex,dh.getCurrentMatrix());
+		if (params.length != 1)
+			throw new IllegalArgumentException("[DragPartModePlugin.start] Wrong parameter number, must be 1.");
+		if (!(params[0] instanceof Integer))
+			throw new IllegalArgumentException("[DragPartModePlugin.start] Param[0] must be Integer.");
+		partId = (int) params[0];
+		//System.out.println("drag start "+partId);
+		if (partId == 0 && editor.getSelected().size() == 0) {
+			movingPart = false;
+			return;
+		}
+		// if user drag a part not in selection set 
+		LDrawPart savedPart = LDrawPart.newInternalUsePart(movingPartName);
+		tempPart = new ArrayList<LDPrimitive>();
+		if (editor.getSelected().size() == 0 || !editor.getSelected().contains(partId)) {
+			editor.unselectAll();
+			tempPart.add(editor.getPart(partId).getClone());
+		}
+		for (int i: editor.getSelected()) {
+			// copy part to temp block
+			tempPart.add(editor.getPart(i).getClone());
+		}
+		// computes moved part "center of gravity"
+		float x=0, y=0, z=0;
+		for (LDPrimitive p: tempPart) {
+			x += p.getTransformation().getX();
+			y += p.getTransformation().getY();
+			z += p.getTransformation().getZ();
+		}
+		// median point
+		x /= tempPart.size();
+		y /= tempPart.size();
+		z /= tempPart.size();
+		// new origin
+		Matrix3D origin = new Matrix3D().moveTo(-x,-y,-z);
+		for (LDPrimitive p: tempPart) {
+			p = p.transform(origin);
+			savedPart.addPart(p);
+		}
+		editor.unselectAll();
+		// remove parts
+		for (LDPrimitive p: tempPart) {
+			editor.delPart(editor.getPart(p.getId()));
+		}
+		dh.resetPointerMatrix();
+		currentPart = LDPrimitive.newGlobalPart(movingPartName,LDrawColor.CURRENT,dh.getCurrentMatrix());
 		currPartRendered = LDRenderedPart.newRenderedPart(currentPart);
 		display.disableHover();
 		movingPart = true;
@@ -107,6 +144,9 @@ public class AddPartModePlugin implements LDEditorPlugin {
 		
 		if (currentPart != null) {
 			display.delRenderedPart(currentPart.getId());
+			for (LDPrimitive p: tempPart) {
+				editor.addPart(p);
+			}
 		}
 		if (connHandler.getTarget() != null) {
 			display.getPart(connHandler.getTarget().getPartId()).unConnect();
@@ -126,6 +166,21 @@ public class AddPartModePlugin implements LDEditorPlugin {
 	public boolean doClick(int partId, Point3D eyeNear, Point3D eyeFar, PickMode mode) {
 		
 		if (movingPart && mode == PickMode.NONE) {
+//			float[] pos = dh.getTargetPoint(eyeNear,eyeFar);
+//			if (pos[0] < -0.99) // line is parallel, no intersection 
+//				return movingPart;
+//			Point3D cursor = null;
+//			if (LDEditor.isSnapping()) {
+//				float snap = dh.getSnap();
+//				 cursor = new Point3D(
+//						Math.round(pos[1]/snap)*snap,
+//						Math.round(pos[2]/snap)*snap,
+//						Math.round(pos[3]/snap)*snap);
+//			}
+//			else {
+//				cursor = new Point3D(pos, 1);
+//			}
+//			Point3D prevCursor = cursor;
 			if (LDEditor.isAutoconnect()) {
 				if (connHandler.isLocked()) {
 					display.getPart(connHandler.getTarget().getPartId()).unConnect();
@@ -136,40 +191,29 @@ public class AddPartModePlugin implements LDEditorPlugin {
 				currentPart = currentPart.moveTo(editor.getCursor()); //prevCursor);
 			}
 			undo.startUndoRecord();
-			if (explodeBlock) {
-				display.delRenderedPart(currentPart.getId());
-				LDrawPart m = LDrawPart.getPart(currentPart.getLdrawId());
-				Matrix3D t = currentPart.getTransformation();
-				int color = currentPart.getColorIndex();
-				for (LDPrimitive p: m.getPrimitives()) {
-					if (p.getType() != LDrawCommand.REFERENCE) {
-						// ignore non-reference elements
-						continue;
-					}
-					if (p.getColorIndex() == 16) {
-						color = colorIndex;
-					}
-					else {
-						color = p.getColorIndex();
-					}
-					LDPrimitive np = LDPrimitive.newGlobalPart(p.getLdrawId(), color, p.getTransformation().transform(t));
-					editor.addPart(np);
-					undo.recordAdd(np);
+			display.delRenderedPart(currentPart.getId());
+			for (LDPrimitive p:tempPart) {
+				if (p.getType() != LDrawCommand.REFERENCE) {
+					// ignore non-reference elements
+					continue;
 				}
+				undo.recordDelete(p);
 			}
-			else {
-				editor.addPart(currentPart);
-				undo.recordAdd(currentPart);
+			LDrawPart m = LDrawPart.getPart(currentPart.getLdrawId());
+			Matrix3D t = currentPart.getTransformation();
+			for (LDPrimitive p: m.getPrimitives()) {
+				if (p.getType() != LDrawCommand.REFERENCE) {
+					// ignore non-reference elements
+					continue;
+				}
+				LDPrimitive np = LDPrimitive.newGlobalPart(p.getLdrawId(), p.getColorIndex(), p.getTransformation().transform(t));
+				editor.addPart(np);
+				undo.recordAdd(np);
 			}
 			undo.endUndoRecord();
-			if (LDEditor.isRepeatBrick()) {
-				start(currentPart.getLdrawId(),colorIndex,explodeBlock);
-			}
-			else {
-				currentPart = null;
-				currPartRendered = null;
-				movingPart = false;
-			}
+			currentPart = null;
+			currPartRendered = null;
+			movingPart = false;
 		}
 		return movingPart;
 	}
@@ -248,9 +292,8 @@ public class AddPartModePlugin implements LDEditorPlugin {
 	@Override
 	public void doColorchanged(int color) { 
 		
-		colorIndex = color; 
 		if (movingPart) {
-			currentPart = currentPart.setColorIndex(colorIndex);
+			currentPart = currentPart.setColorIndex(color);
 			currPartRendered = LDRenderedPart.newRenderedPart(currentPart);
 			display.addRenderedPart(currPartRendered.fastMove(
 					LDEditor.isAutoconnect()?connHandler.getLastConn():editor.getCursor()));
