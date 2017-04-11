@@ -1,5 +1,5 @@
 /*
-	Copyright 2015 Mario Pascucci <mpascucci@gmail.com>
+	Copyright 2015-2017 Mario Pascucci <mpascucci@gmail.com>
 	This file is part of LDEditor
 
 	LDEditor is free software: you can redistribute it and/or modify
@@ -52,12 +52,12 @@ public class BuildStepPlugin implements LDEditorPlugin, ActionListener {
 	
 	
 	private LDEditor editor;
-	private DrawHelpers dh;
-	private Undo<LDPrimitive> undo;
+	//private DrawHelpers dh;
+	//private Undo<LDPrimitive> undo;
 	private LDrawGLDisplay display;
 	
 	// plugin status
-	private boolean stepEditing = false;
+	//private boolean stepEditing = false;
 	private int currentStep = 0;
 	
 	// tool container and saving
@@ -78,8 +78,8 @@ public class BuildStepPlugin implements LDEditorPlugin, ActionListener {
 		if (me == null || dhelp == null || ch == null || gld == null || u == null)
 			throw new IllegalArgumentException("[LDStepEditorPlugin] All parameters must be not null.");
 		editor = me;
-		dh = dhelp;
-		undo = u;
+//		dh = dhelp;
+//		undo = u;
 		display = gld;
 		// controls for step editing
 		String imgFolder;
@@ -115,7 +115,7 @@ public class BuildStepPlugin implements LDEditorPlugin, ActionListener {
 		if (!(params[0] instanceof Container))
 			throw new IllegalArgumentException("[LDStepEditorPlugin.start] Param[0] must be a Container.");
 		toolPanel = (Container) params[0];
-		stepEditing = true;
+		//stepEditing = true;
 		currentStep = editor.getCurrStep();
 		highLightStep();
 		display.update();
@@ -133,7 +133,7 @@ public class BuildStepPlugin implements LDEditorPlugin, ActionListener {
 	@Override
 	public void reset() {
 		
-		stepEditing = false;
+		//stepEditing = false;
 		resetHighLight();
 		display.update();
 		toolPanel.removeAll();

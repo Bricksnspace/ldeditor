@@ -1,3 +1,13 @@
+2017-04-11  Mario Pascucci  <mpascucci@gmail.com>
+
+	* src/bricksnspace/ldeditor/BuildStepPlugin.java (editor): some code cleanup to remove "unused" warnings
+	* src/bricksnspace/ldeditor/LDConnectionEditor.java (uncaughtException): added logging of rendering exceptions
+
+2017-03-31  Mario Pascucci  <mpascucci@gmail.com>
+
+	* src/bricksnspace/ldeditor/BuildStepPlugin.java (editor): Commented out some unused var
+	* src/bricksnspace/ldeditor/LDConnectionEditor.java (uncaughtException): switched to Logger
+
 2017-03-28  Mario Pascucci  <mpascucci@gmail.com>
 
 	* src/bricksnspace/ldeditor/DragPartModePlugin.java: new plugin to move parts via click&drag

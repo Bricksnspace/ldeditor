@@ -1,5 +1,5 @@
 /*
-	Copyright 2014 Mario Pascucci <mpascucci@gmail.com>
+	Copyright 2017 Mario Pascucci <mpascucci@gmail.com>
 	This file is part of LDEditor
 
 	LDEditor is free software: you can redistribute it and/or modify
@@ -30,6 +30,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import bricksnspace.j3dgeom.JSimpleGeom;
 import bricksnspace.j3dgeom.Matrix3D;
@@ -1261,7 +1263,7 @@ public class LDConnectionEditor implements Runnable, UncaughtExceptionHandler,
 	public void uncaughtException(Thread t, Throwable e) {
 		
 		updater.updateIncomplete();
-		e.printStackTrace();
+		Logger.getGlobal().log(Level.WARNING, "Unable to complete rendering.", e);
 	}
 
 
